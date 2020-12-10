@@ -105,13 +105,13 @@ void ca::GridSensor::preprocess_pose(ros::Time cur_time,
     odom_msg.header.stamp = cur_time;
     odom_pub.publish(odom_msg);
 
-    static tf::TransformBroadcaster br;
-    tf::Transform transform;
+    static tf::TransformBroadcaster br; // 相当于发布话题时定义一个发布器
+    tf::Transform transform; // 存放转换信息（位移，旋转）的变量
     transform.setOrigin(tf::Vector3(cur_trans_to_world(0, 3),
                                     cur_trans_to_world(1, 3),
-                                    cur_trans_to_world(2, 3)));
+                                    cur_trans_to_world(2, 3))); //设置子坐标系下的原点在负坐标系下的坐标，即位移
     transform.setBasis(tf::Matrix3x3(cur_trans_to_world(0, 0), cur_trans_to_world(0, 1), cur_trans_to_world(0, 2),
                                      cur_trans_to_world(1, 0), cur_trans_to_world(1, 1), cur_trans_to_world(1, 2),
-                                     cur_trans_to_world(2, 0), cur_trans_to_world(2, 1), cur_trans_to_world(2, 2)));
-    br.sendTransform(tf::StampedTransform(transform, cur_time, "/world", "/base_frame"));
+                                     cur_trans_to_world(2, 0), cur_trans_to_world(2, 1), cur_trans_to_world(2, 2)));//设置旋转
+    br.sendTransform(tf::StampedTransform(transform, cur_time, "/world", "/base_frame")); // 父坐标系world，子坐标系base_frame
 }
